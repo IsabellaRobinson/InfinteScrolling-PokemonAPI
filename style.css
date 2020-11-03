@@ -1,0 +1,22 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: rgba(212, 1, 43, 0.801);
+}
+
+.mainHeader{
+    display: flex;
+    padding: 30px;
+    justify-content: center;
+    /* border: blue 2px solid; */
+}
+
+.mainHeader img{
+    justify-items: center;
+    height: 15vh;
+}
+
+.pokeList {
+    color: white;
+}
+
