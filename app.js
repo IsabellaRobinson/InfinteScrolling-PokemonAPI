@@ -1,54 +1,75 @@
 var offset = 0;
 var count;
+function getImage(url) {
+    return fetch(url).then(function (response) {
+        return response.json()
+    }).then(function (data) {
+        return data.sprites.front_default
+    })
+}
 
-function getTenPokemons(offset) {
 
-        fetch(`https://pokeapi.co/api/v2/pokemon?limit=10&offset=${offset}`,{
-            method:"GET",
-            Headers: {"Accept":"application/JSON;"},
+function getThePokemons(offset) {
+    fetch(`https://pokeapi.co/api/v2/pokemon?limit=10&offset=${offset}`, {
+            method: "GET",
+            Headers: {
+                "Accept": "application/JSON;"
+            },
         })
 
-        .then(function(Response){
+        .then(function (Response) {
             return Response.json();
         })
-
-        .then(function(data){
+        .then(function (data) {
             var template = document.getElementById("template");
             var ul = document.querySelector(".pokeList");
-
-            console.log(data.count);
+            // console.log(data.count);
             count = data.count;
 
-            data.results.forEach(function(results){
-                // console.log(results.name);
-                var clone = template.content.cloneNode(true);
 
-                clone.querySelector("li").innerText = results.name;
+            data.results.forEach(function (results) {
+                console.log(results);
+
+                var clone = template.content.cloneNode(true);
+                clone.querySelector(".name").innerText = results.name;
+                var image = clone.querySelector(".placeholderImage")
+                getImage(results.url).then(function (imageURL){
+                    image.dataset.src = imageURL
+                    imageObserver.observe(image);
+                })
                 ul.appendChild(clone);
             });
 
+
             var lastChild = document.querySelector(".pokeList li:last-child");
-
-            observer.observe(lastChild);    
+            observer.observe(lastChild);
         });
-
-    }
-    
-    var observer = new IntersectionObserver(function (entries) {
-        if (entries[0].intersectionRatio <=  0 )return ;
-        // console.log(entries[0]);
-        observer.unobserve(entries[0].target);
-        offset = offset + 10;
-        if(offset > count) return;
-        getTenPokemons(offset);
-    },{threshold :1});
+}
 
 
-    // getTenPokemons(offset);
-    getTenPokemons(0);
+var observer = new IntersectionObserver(function (entries) {
+    if (entries[0].intersectionRatio <= 0) return;
+    // console.log(entries[0]);
+    observer.unobserve(entries[0].target);
+    offset = offset + 10;
+    if (offset > count) return;
+    getThePokemons(offset);
+}, {
+    threshold: 1
+});
 
 
+var imageObserver = new IntersectionObserver(function(entries){
+    if (entries[0].intersectionRatio <= 0) return;
+    observer.unobserve(entries[0].target);
+    entries[0].target.src = entries[0].target.dataset.src;
+}, {
+    threshold: 1
+})
 
+
+// getThePokemons(offset);
+getThePokemons(0);
 
 
 

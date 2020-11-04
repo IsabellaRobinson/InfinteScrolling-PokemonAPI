@@ -18,5 +18,10 @@ body{
 
 .pokeList {
     color: white;
+    list-style: none;
+}
+
+.placeholderImage {
+    height: 10vh;
 }
 
